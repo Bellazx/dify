@@ -510,6 +510,8 @@ services:
   api:
     image: langgenius/dify-api:1.4.1
     restart: always
+    ports:
+      - "5002:5001"
     environment:
       # Use the shared environment variables.
       <<: *shared-api-worker-env
@@ -533,12 +535,15 @@ services:
     networks:
       - ssrf_proxy_network
       - default
+      # - dzx_network
 
   # worker service
   # The Celery worker for processing the queue.
   worker:
     image: langgenius/dify-api:1.4.1
     restart: always
+    ports:
+      - "5001:5001"
     environment:
       # Use the shared environment variables.
       <<: *shared-api-worker-env
