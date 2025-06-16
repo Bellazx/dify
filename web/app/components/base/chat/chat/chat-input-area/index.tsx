@@ -99,6 +99,16 @@ const ChatInputArea = ({
         notify({ type: 'info', message: t('appAnnotation.errorMessage.queryRequired') })
         return
       }
+      // todo
+      if (!inputs.current_url) {
+        // 获取登陆地址，并完成注入
+        inputs.current_url = window.location.href
+      }
+      if (!inputs.user_id) {
+        inputs.current_url = window.location.href
+        // 判断当前地址是否带token，如果带token，则调用接口获取userid并注入
+        inputs.user_id = '123'
+      }
       if (checkInputsForm(inputs, inputsForm)) {
         onSend(query, files)
         setQuery('')
