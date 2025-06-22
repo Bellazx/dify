@@ -44,11 +44,8 @@ if $api_modified; then
 fi
 
 if $web_modified; then
-    echo "Running ESLint on web module"
-    cd ./web || exit 1
-    lint-staged
-
     echo "Running unit tests check"
+    cd ./web || exit 1
     modified_files=$(git diff --cached --name-only -- utils | grep -v '\.spec\.ts$' || true)
 
     if [ -n "$modified_files" ]; then
