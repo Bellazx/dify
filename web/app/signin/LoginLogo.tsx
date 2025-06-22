@@ -14,7 +14,7 @@ const LoginLogo: FC<LoginLogoProps> = ({
   const { systemFeatures } = useGlobalPublicStore()
   const { theme } = useTheme()
 
-  let src = theme === 'light' ? '/logo/logo-site.png' : `/logo/logo-site-${theme}.png`
+  let src = theme === 'light' ? '/logo/sjtu-site.png' : `/logo/sjtu-site-${theme}.png`
   if (systemFeatures.branding.enabled)
     src = systemFeatures.branding.login_page_logo
 

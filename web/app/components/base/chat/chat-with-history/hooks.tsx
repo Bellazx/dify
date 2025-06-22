@@ -15,7 +15,7 @@ import type {
   ChatItem,
   Feedback,
 } from '../types'
-import { CONVERSATION_ID_INFO } from '../constants'
+import { CONVERSATION_ID_INFO, IDLE_DETECTION_CONFIG } from '../constants'
 import { buildChatItemTree, getProcessedSystemVariablesFromUrlParams, getRawInputsFromUrlParams } from '../utils'
 import { addFileInfos, sortAgentSorts } from '../../../tools/utils'
 import { getProcessedFilesFromResponse } from '@/app/components/base/file-uploader/utils'
@@ -45,6 +45,7 @@ import { TransferMethod } from '@/types/app'
 import { noop } from 'lodash-es'
 import { useGetUserCanAccessApp } from '@/service/access-control'
 import { useGlobalPublicStore } from '@/context/global-public-context'
+import { useIdleDetection } from '@/hooks/use-idle-detection'
 
 function getFormattedChatList(messages: any[]) {
   const newChatList: ChatItem[] = []
@@ -126,7 +127,56 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
       changeLanguage(appData.site.default_language)
   }, [appData])
 
-  const [sidebarCollapseState, setSidebarCollapseState] = useState<boolean>(false)
+  // 检查页面是否需要重置（从空闲超时重定向而来）
+  useEffect(() => {
+    console.log('=== 页面加载，检查重置参数 ===')
+    console.log('当前URL:', window.location.href)
+    
+    const urlParams = new URLSearchParams(window.location.search)
+    const resetParam = urlParams.get('reset')
+    
+    console.log('Reset参数:', resetParam)
+    console.log('所有URL参数:', Object.fromEntries(urlParams.entries()))
+    
+    if (resetParam) {
+      console.log('✅ 检测到重置标记，开始清空所有状态...')
+      
+      try {
+        // 额外清理可能遗漏的数据
+        localStorage.removeItem('conversationIdInfo')
+        localStorage.removeItem('webappSidebarCollapse')
+        
+        // 构建新的URLSearchParams来清理参数
+        const cleanParams = new URLSearchParams()
+        
+        // 遍历现有参数，只保留非敏感参数
+        for (const [key, value] of urlParams.entries()) {
+          if (!['reset', 'token', 'access_token', 'auth_token', 'user_id', 'sys.user_id'].includes(key)) {
+            cleanParams.set(key, value)
+          }
+        }
+        
+        // 构建清理后的URL
+        const cleanUrl = cleanParams.toString() 
+          ? `${window.location.origin}${window.location.pathname}?${cleanParams.toString()}`
+          : `${window.location.origin}${window.location.pathname}`
+        
+        console.log('原始URL:', window.location.href)
+        console.log('清理后URL:', cleanUrl)
+        
+        // 使用 replaceState 避免在历史记录中留下reset参数
+        window.history.replaceState({}, '', cleanUrl)
+        
+        console.log('✅ 页面状态已重置，URL已清理完成')
+      } catch (e) {
+        console.error('❌ 重置页面状态时出错:', e)
+      }
+    } else {
+      console.log('❌ 未检测到重置标记')
+    }
+  }, [])
+
+  const [sidebarCollapseState, setSidebarCollapseState] = useState<boolean>(true)
   const handleSidebarCollapse = useCallback((state: boolean) => {
     if (appId) {
       setSidebarCollapseState(state)
@@ -136,7 +186,9 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
   useEffect(() => {
     if (appId) {
       const localState = localStorage.getItem('webappSidebarCollapse')
-      setSidebarCollapseState(localState === 'collapsed')
+      // 如果没有本地存储值，默认为折叠状态(true)
+      // 如果有本地存储值，则根据存储值决定
+      setSidebarCollapseState(localState ? localState === 'collapsed' : true)
     }
   }, [appId])
   const [conversationIdInfo, setConversationIdInfo] = useLocalStorageState<Record<string, Record<string, string>>>(CONVERSATION_ID_INFO, {
@@ -484,6 +536,129 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     notify({ type: 'success', message: t('common.api.success') })
   }, [isInstalledApp, appId, t, notify])
 
+  // 处理空闲超时的回调函数
+  const handleIdleTimeout = useCallback(async () => {
+    console.log('🔄 用户已空闲超时，开始处理重置流程...')
+    
+    try {
+      // 停止当前聊天
+      currentChatInstanceRef.current.handleStop()
+      
+      // 显示提示信息（在重定向前）
+      notify({ 
+        type: 'info', 
+        message: '由于长时间无操作，即将重新加载页面...' 
+      })
+      
+      console.log('当前URL:', window.location.href)
+      
+      // 构建新的URL，移除token参数
+      const currentUrl = new URL(window.location.href)
+      const cleanParams = new URLSearchParams()
+      
+      // 遍历现有参数，只保留非敏感参数
+      for (const [key, value] of currentUrl.searchParams.entries()) {
+        if (!['token', 'access_token', 'auth_token', 'user_id', 'sys.user_id'].includes(key)) {
+          cleanParams.set(key, value)
+        }
+      }
+      
+      // 添加重置标记，告诉新页面需要清空所有状态
+      cleanParams.set('reset', Date.now().toString())
+      
+      // 重新构建URL
+      const newUrl = cleanParams.toString() 
+        ? `${currentUrl.origin}${currentUrl.pathname}?${cleanParams.toString()}`
+        : `${currentUrl.origin}${currentUrl.pathname}?reset=${Date.now()}`
+      
+      console.log('🔧 构建重定向URL:')
+      console.log('  原始URL:', currentUrl.href)
+      console.log('  新URL:', newUrl)
+      console.log('  重置参数:', cleanParams.get('reset'))
+      
+      // 清除所有相关的本地存储数据
+      try {
+        console.log('🧹 清除本地存储数据...')
+        if (document.visibilityState === 'visible' && !document.hidden) {
+            // 清除token相关
+          localStorage.removeItem('token')
+          localStorage.removeItem('user_token')
+          sessionStorage.removeItem('token')
+          sessionStorage.removeItem('user_token')
+          
+          // 清除对话历史相关
+          localStorage.removeItem('conversationIdInfo')
+          localStorage.removeItem('webappSidebarCollapse')
+          
+          // 清除SWR缓存（对话列表、聊天记录等）
+          const keysToRemove = []
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i)
+            if (key) {
+              // 清除SWR缓存的key（通常以 'swr-' 开头或包含特定模式）
+              if (key.includes('appConversationData') || 
+                  key.includes('appChatList') || 
+                  key.includes('appParams') ||
+                  key.includes('appMeta') ||
+                  key.startsWith('swr-')) {
+                keysToRemove.push(key)
+              }
+            }
+          }
+              
+          批量删除
+          keysToRemove.forEach(key => {
+            localStorage.removeItem(key)
+          })
+          
+          清除sessionStorage中的对话相关数据
+          const sessionKeysToRemove = []
+          for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i)
+            if (key) {
+              if (key.includes('conversation') || 
+                  key.includes('chat') || 
+                  key.includes('input') ||
+                  key.startsWith('swr-')) {
+                sessionKeysToRemove.push(key)
+              }
+            }
+          }
+          
+          sessionKeysToRemove.forEach(key => {
+            sessionStorage.removeItem(key)
+          })
+          
+          console.log('✅ 本地存储数据清除完成')
+        }
+        
+      } catch (e) {
+        console.error('❌ 清除缓存时出错:', e)
+      }
+      
+      // 延迟一点时间让用户看到提示信息，然后重定向
+      setTimeout(() => {
+        console.log('🚀 开始重定向到:', newUrl)
+        // 使用replace避免在浏览器历史记录中留下带token的URL
+        window.location.replace(newUrl)
+      }, 200) // 200ms后重定向
+      
+    } catch (error) {
+      console.error('❌ 处理空闲超时时出错:', error)
+      // 如果URL处理失败，则直接刷新页面
+      console.log('🔄 回退方案：直接刷新页面')
+      window.location.reload()
+    }
+  }, [currentChatInstanceRef, notify])
+
+  // 启用空闲检测，使用配置化的参数
+  const { isShowingWarning, remainingTime } = useIdleDetection({
+    timeout: IDLE_DETECTION_CONFIG.TOTAL_TIMEOUT,
+    onIdle: handleIdleTimeout,
+    enabled: true, // 始终启用空闲检测
+    warningTime: IDLE_DETECTION_CONFIG.WARNING_TIME,
+  })
+
   return {
     appInfoError,
     appInfoLoading: appInfoLoading || (systemFeatures.webapp_auth.enabled && isCheckingPermission),
@@ -532,5 +707,7 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     currentConversationInputs,
     setCurrentConversationInputs,
     allInputsHidden,
+    isShowingIdleWarning: isShowingWarning,
+    idleRemainingTime: remainingTime,
   }
 }

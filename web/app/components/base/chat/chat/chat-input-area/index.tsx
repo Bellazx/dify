@@ -83,7 +83,7 @@ const ChatInputArea = ({
   const historyRef = useRef([''])
   const [currentIndex, setCurrentIndex] = useState(-1)
   const isComposingRef = useRef(false)
-  const handleSend = () => {
+  const handleSend = async () => {
     if (isResponding) {
       notify({ type: 'info', message: t('appDebug.errorMessage.waitForResponse') })
       return
@@ -99,16 +99,32 @@ const ChatInputArea = ({
         notify({ type: 'info', message: t('appAnnotation.errorMessage.queryRequired') })
         return
       }
-      // todo
-      if (!inputs.current_url) {
-        // 获取登陆地址，并完成注入
-        inputs.current_url = window.location.href
+      if (!(inputs.current_url || window.location.href.includes('token='))) {
+        // 调用API接口
+        try {
+          const url = "http://127.0.0.1:8888/lib/auth/encrypt?qryType=1&qryStr=" + window.location.href
+
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {}
+          })
+
+          const responseText = await response.text()
+          console.error(responseText)
+
+          // 获取登陆地址，并完成注入
+          const responseData = JSON.parse(responseText)
+          if(responseData.length > 256){
+            console.error("url is too long")
+            return
+          }
+          inputs.current_url = "http://10.119.4.239/docaffiresinterface/userIdentify.aspx?codeStr=" + responseData.data + "sjtulibt"
+
+        } catch (error) {
+          console.error('API调用失败:', error)
+        }
       }
-      if (!inputs.user_id) {
-        inputs.current_url = window.location.href
-        // 判断当前地址是否带token，如果带token，则调用接口获取userid并注入
-        inputs.user_id = '123'
-      }
+
       if (checkInputsForm(inputs, inputsForm)) {
         onSend(query, files)
         setQuery('')

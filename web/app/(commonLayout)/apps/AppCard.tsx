@@ -322,7 +322,7 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
               iconType={app.icon_type}
               icon={app.icon}
               background={app.icon_background}
-              imageUrl={app.icon_url}
+              imageUrl='/logo/sjtu-site.png'
             />
             <AppTypeIcon type={app.mode} wrapperClassName='absolute -bottom-0.5 -right-0.5 w-4 h-4 shadow-sm' className='h-3 w-3' />
           </div>

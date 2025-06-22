@@ -80,10 +80,10 @@ const Header = () => {
           <div className='mr-1 shrink-0'>
             <AppIcon
               size='large'
-              iconType={appData?.site.icon_type}
+              iconType='image'
               icon={appData?.site.icon}
               background={appData?.site.icon_background}
-              imageUrl={appData?.site.icon_url}
+              imageUrl='/logo/sjtu-site.png'
             />
           </div>
           {!currentConversationId && (
@@ -93,7 +93,7 @@ const Header = () => {
             <>
               <div className='p-1 text-divider-deep'>/</div>
               <Operation
-                title={currentConversationItem?.name || ''}
+                title={appData?.site.title || ''}
                 isPinned={!!isPin}
                 togglePin={() => handleOperate(isPin ? 'unpin' : 'pin')}
                 isShowDelete

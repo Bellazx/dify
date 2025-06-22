@@ -59,6 +59,8 @@ export type ChatWithHistoryContextValue = {
   currentConversationInputs: Record<string, any> | null,
   setCurrentConversationInputs: (v: Record<string, any>) => void,
   allInputsHidden: boolean,
+  isShowingIdleWarning: boolean,
+  idleRemainingTime: number,
 }
 
 export const ChatWithHistoryContext = createContext<ChatWithHistoryContextValue>({
@@ -85,7 +87,7 @@ export const ChatWithHistoryContext = createContext<ChatWithHistoryContextValue>
   isInstalledApp: false,
   handleFeedback: noop,
   currentChatInstanceRef: { current: { handleStop: noop } },
-  sidebarCollapseState: false,
+  sidebarCollapseState: true,
   handleSidebarCollapse: noop,
   clearChatList: false,
   setClearChatList: noop,
@@ -94,5 +96,7 @@ export const ChatWithHistoryContext = createContext<ChatWithHistoryContextValue>
   currentConversationInputs: {},
   setCurrentConversationInputs: noop,
   allInputsHidden: false,
+  isShowingIdleWarning: false,
+  idleRemainingTime: 0,
 })
 export const useChatWithHistoryContext = () => useContext(ChatWithHistoryContext)

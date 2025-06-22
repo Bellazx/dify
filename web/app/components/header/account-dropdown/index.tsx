@@ -189,7 +189,7 @@ export default function AppSelector() {
                       }
                     </div>
                   </>}
-                  <MenuItem disabled>
+                  {/* <MenuItem disabled>
                     <div className='p-1'>
                       <div className={cn(itemClassName, 'hover:bg-transparent')}>
                         <RiTShirt2Line className='size-4 shrink-0 text-text-tertiary' />
@@ -197,7 +197,7 @@ export default function AppSelector() {
                         <ThemeSwitcher />
                       </div>
                     </div>
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem>
                     <div className='p-1' onClick={() => handleLogout()}>
                       <div

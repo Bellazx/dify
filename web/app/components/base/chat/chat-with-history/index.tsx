@@ -16,6 +16,7 @@ import Sidebar from './sidebar'
 import Header from './header'
 import HeaderInMobile from './header-in-mobile'
 import ChatWrapper from './chat-wrapper'
+import IdleWarning from './idle-warning'
 import type { InstalledApp } from '@/models/explore'
 import Loading from '@/app/components/base/loading'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
@@ -97,6 +98,7 @@ const ChatWithHistory: FC<ChatWithHistoryProps> = ({
       isMobile && 'flex-col',
       className,
     )}>
+      <IdleWarning />
       {!isMobile && (
         <div className={cn(
           'flex w-[236px] flex-col p-1 pr-0 transition-all duration-200 ease-in-out',
@@ -187,6 +189,8 @@ const ChatWithHistoryWrap: FC<ChatWithHistoryWrapProps> = ({
     currentConversationInputs,
     setCurrentConversationInputs,
     allInputsHidden,
+    isShowingIdleWarning,
+    idleRemainingTime,
   } = useChatWithHistory(installedAppInfo)
 
   return (
@@ -232,6 +236,8 @@ const ChatWithHistoryWrap: FC<ChatWithHistoryWrapProps> = ({
       currentConversationInputs,
       setCurrentConversationInputs,
       allInputsHidden,
+      isShowingIdleWarning,
+      idleRemainingTime,
     }}>
       <ChatWithHistory className={className} />
     </ChatWithHistoryContext.Provider>

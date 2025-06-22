@@ -26,10 +26,10 @@ const InfoModal = ({
       <div className={cn('flex flex-col items-center gap-4 px-4 pb-8 pt-10')}>
         <AppIcon
           size='xxl'
-          iconType={data?.icon_type}
+          iconType='image'
           icon={data?.icon}
           background={data?.icon_background || appDefaultIconBackground}
-          imageUrl={data?.icon_url}
+          imageUrl='/logo/sjtu-site.png'
         />
         <div className='system-xl-semibold text-text-secondary'>{data?.title}</div>
         <div className='system-xs-regular text-text-tertiary'>

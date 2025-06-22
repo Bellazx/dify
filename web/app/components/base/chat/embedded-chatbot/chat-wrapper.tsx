@@ -192,10 +192,10 @@ const ChatWrapper = () => {
           <div className='flex max-w-[720px] grow gap-4'>
             <AppIcon
               size='xl'
-              iconType={appData?.site.icon_type}
+              iconType='image'
               icon={appData?.site.icon}
               background={appData?.site.icon_background}
-              imageUrl={appData?.site.icon_url}
+              imageUrl='/logo/sjtu-site.png'
             />
             <div className='body-lg-regular grow rounded-2xl bg-chat-bubble-bg px-4 py-3 text-text-primary'>
               <Markdown content={welcomeMessage.content} />
@@ -209,10 +209,10 @@ const ChatWrapper = () => {
       <div className={cn('flex h-[50vh] flex-col items-center justify-center gap-3 py-12', isMobile ? 'min-h-[30vh] py-0' : 'h-[50vh]')}>
         <AppIcon
           size='xl'
-          iconType={appData?.site.icon_type}
+          iconType='image'
           icon={appData?.site.icon}
           background={appData?.site.icon_background}
-          imageUrl={appData?.site.icon_url}
+          imageUrl='/logo/sjtu-site.png'
         />
         <div className='max-w-[768px] px-4'>
           <Markdown className='!body-2xl-regular !text-text-tertiary' content={welcomeMessage.content} />
@@ -225,10 +225,10 @@ const ChatWrapper = () => {
     ? <LogoAvatar className='relative shrink-0' />
     : (appData?.site && appData.site.use_icon_as_answer_icon)
       ? <AnswerIcon
-        iconType={appData.site.icon_type}
+        iconType='image'
         icon={appData.site.icon}
         background={appData.site.icon_background}
-        imageUrl={appData.site.icon_url}
+        imageUrl='/logo/sjtu-site.png'
       />
       : null
 

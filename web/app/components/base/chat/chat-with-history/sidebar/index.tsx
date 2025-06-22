@@ -92,7 +92,7 @@ const Sidebar = ({ isPanel }: Props) => {
             iconType={appData?.site.icon_type}
             icon={appData?.site.icon}
             background={appData?.site.icon_background}
-            imageUrl={appData?.site.icon_url}
+            imageUrl='/logo/sjtu-site.png'
           />
         </div>
         <div className={cn('system-md-semibold grow truncate text-text-secondary')}>{appData?.site.title}</div>
@@ -107,14 +107,15 @@ const Sidebar = ({ isPanel }: Props) => {
           </ActionButton>
         )}
       </div>
-      <div className='shrink-0 px-3 py-4'>
+      {/* <div className='shrink-0 px-3 py-4'>
         <Button variant='secondary-accent' disabled={isResponding} className='w-full justify-center' onClick={handleNewConversation}>
           <RiEditBoxLine className='mr-1 h-4 w-4' />
           {t('share.chat.newChat')}
         </Button>
-      </div>
+      </div> */}
+      {/*
       <div className='h-0 grow space-y-2 overflow-y-auto px-3 pt-4'>
-        {/* pinned list */}
+        // pinned list
         {!!pinnedConversationList.length && (
           <div className='mb-4'>
             <List
@@ -137,9 +138,10 @@ const Sidebar = ({ isPanel }: Props) => {
           />
         )}
       </div>
+      
       <div className='flex shrink-0 items-center justify-between p-3'>
         <MenuDropdown hideLogout={isInstalledApp} placement='top-start' data={appData?.site} />
-        {/* powered by */}
+        // powered by
         <div className='shrink-0'>
           {!appData?.custom_config?.remove_webapp_brand && (
             <div className={cn(
@@ -156,6 +158,7 @@ const Sidebar = ({ isPanel }: Props) => {
             </div>
           )}
         </div>
+
         {!!showConfirm && (
           <Confirm
             title={t('share.chat.deleteConversation.title')}
@@ -175,6 +178,7 @@ const Sidebar = ({ isPanel }: Props) => {
           />
         )}
       </div>
+      */}
     </div>
   )
 }

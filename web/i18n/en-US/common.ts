@@ -573,6 +573,10 @@ const translation = {
     thinking: 'Thinking...',
     thought: 'Thought',
     resend: 'Resend',
+    idleWarning: {
+      title: 'Conversation will be reset soon',
+      message: 'The conversation will restart in {{seconds}} seconds',
+    },
   },
   promptEditor: {
     placeholder: 'Write your prompt word here, enter \'{\' to insert a variable, enter \'/\' to insert a prompt content block',

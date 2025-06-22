@@ -6,6 +6,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -73,6 +74,8 @@ export type ChatProps = {
   inputDisabled?: boolean
   isMobile?: boolean
   sidebarCollapseState?: boolean
+  onLoginSuccess?: (userId: string) => void
+  onInputsChange?: (inputs: Record<string, any>) => void
 }
 
 const Chat: FC<ChatProps> = ({
@@ -112,6 +115,8 @@ const Chat: FC<ChatProps> = ({
   inputDisabled,
   isMobile,
   sidebarCollapseState,
+  onLoginSuccess,
+  onInputsChange,
 }) => {
   const { t } = useTranslation()
   const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
@@ -128,11 +133,67 @@ const Chat: FC<ChatProps> = ({
   const chatFooterRef = useRef<HTMLDivElement>(null)
   const chatFooterInnerRef = useRef<HTMLDivElement>(null)
   const userScrolledRef = useRef(false)
+  
+  // 登录成功消息状态
+  const [loginMessage, setLoginMessage] = useState<ChatItem | null>(null)
+  // 用于防止重复初始化的标记
+  const initializeAuthRef = useRef(false)
+  
+  // 按时间顺序合并chatList和登录消息
+  const displayChatList = useMemo(() => {
+    if (!loginMessage) return chatList
+    
+    // 如果没有现有对话，直接返回登录消息
+    if (chatList.length === 0) return [loginMessage]
+    
+    console.log('=== 调试时间排序逻辑 ===')
+    console.log('登录消息时间:', loginMessage.more?.time)
+    
+    // 找到正确的插入位置
+    const loginTime = new Date(loginMessage.more?.time || Date.now()).getTime()
+    let insertIndex = chatList.length // 默认插入到最后
+    
+    for (let i = 0; i < chatList.length; i++) {
+      const item = chatList[i]
+      let itemTime = 0
+      
+      // 尝试获取消息时间，支持多种时间格式
+      if (item.more?.time) {
+        itemTime = new Date(item.more.time).getTime()
+      } else if (item.id) {
+        // 如果没有时间戳，尝试从ID中提取时间
+        const timeMatch = item.id.match(/(\d{13})/) // 匹配13位时间戳
+        if (timeMatch) {
+          itemTime = parseInt(timeMatch[1])
+        }
+      }
+      
+      console.log(`消息${i}: 时间=${itemTime}, ID=${item.id}, 内容=${item.content.substring(0, 30)}`)
+      
+      // 如果登录时间早于当前消息时间，插入在这里
+      if (loginTime < itemTime) {
+        insertIndex = i
+        break
+      }
+    }
+    
+    console.log('插入位置:', insertIndex, '总长度:', chatList.length)
+    
+    // 在指定位置插入登录消息
+    const result = [...chatList]
+    result.splice(insertIndex, 0, loginMessage)
+    return result
+  }, [chatList, loginMessage])
+  
+  // 生成唯一ID的辅助函数
+  const generateUniqueId = () => {
+    return `login_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  }
 
   const handleScrollToBottom = useCallback(() => {
-    if (chatList.length > 1 && chatContainerRef.current && !userScrolledRef.current)
+    if (displayChatList.length > 1 && chatContainerRef.current && !userScrolledRef.current)
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
-  }, [chatList.length])
+  }, [displayChatList.length])
 
   const handleWindowResize = useCallback(() => {
     if (chatContainerRef.current)
@@ -144,6 +205,89 @@ const Chat: FC<ChatProps> = ({
     if (chatContainerInnerRef.current && chatFooterInnerRef.current)
       chatFooterInnerRef.current.style.width = `${chatContainerInnerRef.current.clientWidth}px`
   }, [])
+
+  // 初始化用户认证
+  useEffect(() => {
+    const initializeUserAuth = async () => {
+      // 防止重复执行
+      if (initializeAuthRef.current) {
+        console.log('认证已初始化，跳过重复执行')
+        return
+      }
+      
+      // 检查是否是从空闲重置重定向而来
+      const urlParams = new URLSearchParams(window.location.search)
+      const resetParam = urlParams.get('reset')
+      
+      if (resetParam) {
+        console.log('检测到重置参数，跳过用户认证流程')
+        return
+      }
+      
+      // 检查inputs是否存在且user_id为空，以及URL中是否包含token
+      if (inputs && !inputs.user_id && window.location.href.includes('token=')) {
+        // 标记认证开始，防止重复执行
+        initializeAuthRef.current = true
+        
+        inputs.current_url = inputs.current_url
+        console.log('当前URL:', window.location.href)
+        console.log('开始用户认证流程')
+
+        try {
+          // 解析URL中的token
+          const tokenStr = window.location.href.split('token=')[1].split('sjtulibt')[0]
+          const url = "http://127.0.0.1:8888/lib/auth/encrypt?qryType=2&qryStr=" + tokenStr
+          
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {}
+          })
+          
+          const responseText = await response.text()
+          console.log('API响应:', responseText)
+          
+          const responseData = JSON.parse(responseText)
+          
+          if (responseData.data) {
+            // 注入用户信息到inputs
+            inputs.user_id = responseData.data
+            console.log('用户ID设置成功:', inputs.user_id)
+            
+            // 发送登录消息到后端保存
+            if (onSend) {
+              console.log('发送登录消息到后端保存')
+              // 延迟发送，确保不与用户交互冲突
+              setTimeout(() => {
+                onSend(`【系统消息】 用户认证中，请稍后...`, [])
+              }, 1000)
+            }
+            
+            // 调用回调（如果有的话）
+            if (onLoginSuccess) {
+              onLoginSuccess(inputs.user_id)
+            }
+          } else {
+            console.error('API返回数据异常:', responseData)
+            // 重置标记允许重试
+            initializeAuthRef.current = false
+          }
+        } catch (error) {
+          console.error('用户认证API调用失败:', error)
+          // 重置标记允许重试
+          initializeAuthRef.current = false
+        }
+      } else {
+        console.log('跳过认证：', {
+          hasInputs: !!inputs,
+          hasUserId: inputs?.user_id,
+          hasToken: window.location.href.includes('token=')
+        })
+      }
+    }
+
+    // 只在组件初始化时执行一次
+    initializeUserAuth()
+  }, []) // 移除依赖项，防止重复执行
 
   useEffect(() => {
     handleScrollToBottom()
@@ -215,7 +359,7 @@ const Chat: FC<ChatProps> = ({
   return (
     <ChatContextProvider
       config={config}
-      chatList={chatList}
+      chatList={displayChatList}
       isResponding={isResponding}
       showPromptLog={showPromptLog}
       questionIcon={questionIcon}
@@ -238,15 +382,15 @@ const Chat: FC<ChatProps> = ({
             className={cn('w-full', !noSpacing && 'px-8', chatContainerInnerClassName)}
           >
             {
-              chatList.map((item, index) => {
+              displayChatList.map((item, index) => {
                 if (item.isAnswer) {
-                  const isLast = item.id === chatList[chatList.length - 1]?.id
+                  const isLast = item.id === displayChatList[displayChatList.length - 1]?.id
                   return (
                     <Answer
                       appData={appData}
                       key={item.id}
                       item={item}
-                      question={chatList[index - 1]?.content}
+                      question={displayChatList[index - 1]?.content}
                       index={index}
                       config={config}
                       answerIcon={answerIcon}

@@ -76,8 +76,8 @@ const HeaderInMobile = () => {
                 className='mr-2'
                 size='tiny'
                 icon={appData?.site.icon}
-                iconType={appData?.site.icon_type}
-                imageUrl={appData?.site.icon_url}
+                iconType='image'
+                imageUrl='/logo/sjtu-site.png'
                 background={appData?.site.icon_background}
               />
               <div className='system-md-semibold truncate text-text-secondary'>

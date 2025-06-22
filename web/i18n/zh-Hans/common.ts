@@ -573,6 +573,10 @@ const translation = {
     thinking: '深度思考中...',
     thought: '已深度思考',
     resend: '重新发送',
+    idleWarning: {
+      title: '即将自动重置对话',
+      message: '{{seconds}} 秒后将重新开始对话',
+    },
   },
   promptEditor: {
     placeholder: '在这里写你的提示词，输入\'{\' 插入变量、输入\'/\' 插入提示内容块',

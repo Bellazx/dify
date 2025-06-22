@@ -580,10 +580,10 @@ const TextGeneration: FC<IMainProps> = ({
           <div className='flex items-center gap-3'>
             <AppIcon
               size={isPC ? 'large' : 'small'}
-              iconType={siteInfo.icon_type}
+              iconType='image'
               icon={siteInfo.icon}
               background={siteInfo.icon_background || appDefaultIconBackground}
-              imageUrl={siteInfo.icon_url}
+              imageUrl='/logo/sjtu-site.png'
             />
             <div className='system-md-semibold grow truncate text-text-secondary'>{siteInfo.title}</div>
             <MenuDropdown hideLogout={isInstalledApp || appAccessMode?.accessMode === AccessMode.PUBLIC} data={siteInfo} />
