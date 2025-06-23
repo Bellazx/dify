@@ -263,8 +263,8 @@ def call_borrow_book_list_api(user_id):
     if not borrow_info_res or borrow_info_res.get('resStr') != '1':
         print("获取借书列表失败" + borrow_info_res.get('msgStr'))
         return {
-            'success': True,
-            'message': "当前用户没有借阅图书"
+            'success': False,
+            'message': "获取借书列表失败" + borrow_info_res.get('msgStr')
         }
     borrow_info = borrow_info_res.get('retBook')
     """转换原始JSON数据到API模型格式"""
