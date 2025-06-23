@@ -580,6 +580,7 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
       try {
         console.log('🧹 清除本地存储数据...')
         if (document.visibilityState === 'visible' && !document.hidden) {
+          console.log('页面显示无问题🧹 清除本地存储数据...')
             // 清除token相关
           localStorage.removeItem('token')
           localStorage.removeItem('user_token')
@@ -606,12 +607,12 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
             }
           }
               
-          批量删除
+          // 批量删除
           keysToRemove.forEach(key => {
             localStorage.removeItem(key)
           })
           
-          清除sessionStorage中的对话相关数据
+          // 清除sessionStorage中的对话相关数据
           const sessionKeysToRemove = []
           for (let i = 0; i < sessionStorage.length; i++) {
             const key = sessionStorage.key(i)
@@ -637,11 +638,25 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
       }
       
       // 延迟一点时间让用户看到提示信息，然后重定向
-      setTimeout(() => {
-        console.log('🚀 开始重定向到:', newUrl)
-        // 使用replace避免在浏览器历史记录中留下带token的URL
+      console.log('🚀 开始重定向到:', newUrl)
+      
+      // 先强制清除当前URL的token参数，然后重定向
+      try {
+        // 方法1: 先用history API清理当前URL
+        window.history.replaceState({}, '', newUrl)
+        console.log('✅ URL已通过history API更新')
+        
+        // 方法2: 然后强制刷新页面确保生效
+        setTimeout(() => {
+          console.log('🔄 强制刷新页面以确保token完全移除')
+          window.location.reload()
+        }, 100)
+        
+      } catch (e) {
+        console.error('❌ History API失败，使用直接重定向:', e)
+        // 如果history API失败，直接重定向
         window.location.replace(newUrl)
-      }, 200) // 200ms后重定向
+      }
       
     } catch (error) {
       console.error('❌ 处理空闲超时时出错:', error)
