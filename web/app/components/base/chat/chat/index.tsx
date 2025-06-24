@@ -35,6 +35,7 @@ import AgentLogModal from '@/app/components/base/agent-log-modal'
 import PromptLogModal from '@/app/components/base/prompt-log-modal'
 import { useStore as useAppStore } from '@/app/components/app/store'
 import type { AppData } from '@/models/share'
+import { loadApiConfig, buildEncryptUrl } from '@/utils/api-config'
 
 export type ChatProps = {
   appData?: AppData
@@ -138,6 +139,8 @@ const Chat: FC<ChatProps> = ({
   const [loginMessage, setLoginMessage] = useState<ChatItem | null>(null)
   // 用于防止重复初始化的标记
   const initializeAuthRef = useRef(false)
+  // API配置状态
+  const [apiConfig, setApiConfig] = useState<any>(null)
   
   // 按时间顺序合并chatList和登录消息
   const displayChatList = useMemo(() => {
@@ -206,6 +209,19 @@ const Chat: FC<ChatProps> = ({
       chatFooterInnerRef.current.style.width = `${chatContainerInnerRef.current.clientWidth}px`
   }, [])
 
+  // 组件挂载时加载API配置
+  useEffect(() => {
+    const initConfig = async () => {
+      try {
+        const config = await loadApiConfig()
+        setApiConfig(config)
+      } catch (error) {
+        console.error('Failed to initialize API config:', error)
+      }
+    }
+    initConfig()
+  }, [])
+
   // 初始化用户认证
   useEffect(() => {
     const initializeUserAuth = async () => {
@@ -224,8 +240,8 @@ const Chat: FC<ChatProps> = ({
         return
       }
       
-      // 检查inputs是否存在且user_id为空，以及URL中是否包含token
-      if (inputs && !inputs.user_id && window.location.href.includes('token=')) {
+      // 检查inputs是否存在且user_id为空，以及URL中是否包含token，并且API配置已加载
+      if (inputs && !inputs.user_id && window.location.href.includes('token=') && apiConfig) {
         // 标记认证开始，防止重复执行
         initializeAuthRef.current = true
         
@@ -236,7 +252,8 @@ const Chat: FC<ChatProps> = ({
         try {
           // 解析URL中的token
           const tokenStr = window.location.href.split('token=')[1].split('sjtulibt')[0]
-          const url = "http://127.0.0.1:8888/lib/auth/encrypt?qryType=2&qryStr=" + tokenStr
+          // 使用qryType=2构建URL
+          const url = buildEncryptUrl(apiConfig, tokenStr, '2')
           
           const response = await fetch(url, {
             method: 'GET',
@@ -287,7 +304,7 @@ const Chat: FC<ChatProps> = ({
 
     // 只在组件初始化时执行一次
     initializeUserAuth()
-  }, []) // 移除依赖项，防止重复执行
+  }, [apiConfig]) // 依赖apiConfig，当配置加载完成后执行
 
   useEffect(() => {
     handleScrollToBottom()

@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from 'react'
@@ -27,6 +28,7 @@ import { useToastContext } from '@/app/components/base/toast'
 import FeatureBar from '@/app/components/base/features/new-feature-panel/feature-bar'
 import type { FileUpload } from '@/app/components/base/features/types'
 import { TransferMethod } from '@/types/app'
+import { loadApiConfig, buildEncryptUrl, buildUserIdentifyUrl } from '@/utils/api-config'
 
 type ChatInputAreaProps = {
   botName?: string
@@ -70,6 +72,7 @@ const ChatInputArea = ({
   } = useTextAreaHeight()
   const [query, setQuery] = useState('')
   const [showVoiceInput, setShowVoiceInput] = useState(false)
+  const [apiConfig, setApiConfig] = useState<any>(null)
   const filesStore = useFileStore()
   const {
     handleDragFileEnter,
@@ -83,6 +86,19 @@ const ChatInputArea = ({
   const historyRef = useRef([''])
   const [currentIndex, setCurrentIndex] = useState(-1)
   const isComposingRef = useRef(false)
+
+  // 组件挂载时加载API配置
+  useEffect(() => {
+    const initConfig = async () => {
+      try {
+        const config = await loadApiConfig()
+        setApiConfig(config)
+      } catch (error) {
+        console.error('Failed to initialize API config:', error)
+      }
+    }
+    initConfig()
+  }, [])
   const handleSend = async () => {
     if (isResponding) {
       notify({ type: 'info', message: t('appDebug.errorMessage.waitForResponse') })
@@ -101,8 +117,13 @@ const ChatInputArea = ({
       }
       if (!(inputs.current_url || window.location.href.includes('token='))) {
         // 调用API接口
+        if (!apiConfig) {
+          console.error('API配置未加载')
+          return
+        }
+
         try {
-          const url = "http://127.0.0.1:8888/lib/auth/encrypt?qryType=1&qryStr=" + window.location.href
+          const url = buildEncryptUrl(apiConfig, window.location.href)
 
           const response = await fetch(url, {
             method: 'GET',
@@ -118,7 +139,7 @@ const ChatInputArea = ({
             console.error("url is too long")
             return
           }
-          inputs.current_url = "http://10.119.4.239/docaffiresinterface/userIdentify.aspx?codeStr=" + responseData.data + "sjtulibt"
+          inputs.current_url = buildUserIdentifyUrl(apiConfig, responseData.data)
 
         } catch (error) {
           console.error('API调用失败:', error)

@@ -1,0 +1,28 @@
+{
+  "api": {
+    "encrypt": {
+      "baseUrl": "http://111.186.61.148:8888",
+      "endpoint": "/lib/auth/encrypt",
+      "params": {
+        "qryType": "1"
+      }
+    },
+    "userIdentify": {
+      "baseUrl": "http://10.119.4.239",
+      "endpoint": "/docaffiresinterface/userIdentify.aspx",
+      "suffix": "sjtulibt"
+    }
+  },
+  "environments": {
+    "development": {
+      "encryptBaseUrl": "http://127.0.0.1:8888"
+    },
+    "docker": {
+      "encryptBaseUrl": "http://111.186.61.148:8888"
+    },
+    "production": {
+      "encryptBaseUrl": "http://111.186.61.148:8888"
+    }
+  },
+  "currentEnvironment": "docker"
+} 
