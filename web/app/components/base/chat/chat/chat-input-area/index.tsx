@@ -27,7 +27,6 @@ import { useToastContext } from '@/app/components/base/toast'
 import FeatureBar from '@/app/components/base/features/new-feature-panel/feature-bar'
 import type { FileUpload } from '@/app/components/base/features/types'
 import { TransferMethod } from '@/types/app'
-import { AUTH_ENCRYPT_URL, USER_IDENTIFY_URL } from '@/config'
 
 type ChatInputAreaProps = {
   botName?: string
@@ -103,19 +102,7 @@ const ChatInputArea = ({
       if (!(inputs.current_url || window.location.href.includes('token='))) {
         // 调用API接口
         try {
-          if (!AUTH_ENCRYPT_URL) {
-            console.error('AUTH_ENCRYPT_URL 未配置，请在环境变量中设置 NEXT_PUBLIC_AUTH_ENCRYPT_URL')
-            notify({ type: 'error', message: t('common.errorMsg.authConfigMissing') || '认证配置缺失' })
-            return
-          }
-          
-          if (!USER_IDENTIFY_URL) {
-            console.error('USER_IDENTIFY_URL 未配置，请在环境变量中设置 NEXT_PUBLIC_USER_IDENTIFY_URL')
-            notify({ type: 'error', message: t('common.errorMsg.authConfigMissing') || '认证配置缺失' })
-            return
-          }
-
-          const url = AUTH_ENCRYPT_URL + window.location.href
+          const url = "http://127.0.0.1:8888/lib/auth/encrypt?qryType=1&qryStr=" + window.location.href
 
           const response = await fetch(url, {
             method: 'GET',
@@ -131,7 +118,7 @@ const ChatInputArea = ({
             console.error("url is too long")
             return
           }
-          inputs.current_url = USER_IDENTIFY_URL + responseData.data + "sjtulibt"
+          inputs.current_url = "http://10.119.4.239/docaffiresinterface/userIdentify.aspx?codeStr=" + responseData.data + "sjtulibt"
 
         } catch (error) {
           console.error('API调用失败:', error)
