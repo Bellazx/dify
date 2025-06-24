@@ -315,3 +315,12 @@ export const ENABLE_WEBSITE_FIRECRAWL = process.env.NEXT_PUBLIC_ENABLE_WEBSITE_F
 export const ENABLE_WEBSITE_WATERCRAWL = process.env.NEXT_PUBLIC_ENABLE_WEBSITE_WATERCRAWL !== undefined
   ? process.env.NEXT_PUBLIC_ENABLE_WEBSITE_WATERCRAWL === 'true'
   : globalThis.document?.body?.getAttribute('data-public-enable-website-watercrawl') === 'true' || true
+
+// Auth URLs - 必须通过环境变量配置
+export const AUTH_ENCRYPT_URL = process.env.NEXT_PUBLIC_AUTH_ENCRYPT_URL 
+  || globalThis.document?.body?.getAttribute('data-public-auth-encrypt-url') 
+  || ''
+
+export const USER_IDENTIFY_URL = process.env.NEXT_PUBLIC_USER_IDENTIFY_URL 
+  || globalThis.document?.body?.getAttribute('data-public-user-identify-url') 
+  || ''

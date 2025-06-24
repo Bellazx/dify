@@ -54,6 +54,8 @@ const LocaleLayout = async ({
         data-public-enable-website-jinareader={process.env.NEXT_PUBLIC_ENABLE_WEBSITE_JINAREADER}
         data-public-enable-website-firecrawl={process.env.NEXT_PUBLIC_ENABLE_WEBSITE_FIRECRAWL}
         data-public-enable-website-watercrawl={process.env.NEXT_PUBLIC_ENABLE_WEBSITE_WATERCRAWL}
+        data-public-auth-encrypt-url={process.env.NEXT_PUBLIC_AUTH_ENCRYPT_URL}
+        data-public-user-identify-url={process.env.NEXT_PUBLIC_USER_IDENTIFY_URL}
       >
         <BrowserInitor>
           <SentryInitor>
