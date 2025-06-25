@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import {
   RiEditBoxLine,
   RiLayoutRight2Line,
@@ -31,6 +31,7 @@ const Header = () => {
     handleRenameConversation,
     handleDeleteConversation,
     handleNewConversation,
+    handleStartChat,
     sidebarCollapseState,
     handleSidebarCollapse,
     isResponding,
@@ -70,6 +71,13 @@ const Header = () => {
       handleRenameConversation(showRename.id, newName, { onSuccess: handleCancelRename })
   }, [showRename, handleRenameConversation, handleCancelRename])
 
+  // 页面初始化时自动开始对话
+  useEffect(() => {
+    if (!currentConversationId && !isResponding) {
+      handleStartChat()
+    }
+  }, [currentConversationId, isResponding, handleStartChat])
+
   return (
     <>
       <div className='flex h-14 shrink-0 items-center justify-between p-3'>
@@ -92,7 +100,7 @@ const Header = () => {
           {currentConversationId && currentConversationItem && isSidebarCollapsed && (
             <>
               <div className='p-1 text-divider-deep'>/</div>
-              <Operation
+              {/* <Operation
                 title={appData?.site.title || ''}
                 isPinned={!!isPin}
                 togglePin={() => handleOperate(isPin ? 'unpin' : 'pin')}
@@ -100,13 +108,13 @@ const Header = () => {
                 isShowRenameConversation
                 onRenameConversation={() => handleOperate('rename')}
                 onDelete={() => handleOperate('delete')}
-              />
+              /> */}
             </>
           )}
           <div className='flex items-center px-1'>
             <div className='h-[14px] w-px bg-divider-regular'></div>
           </div>
-          {isSidebarCollapsed && (
+          {/* {isSidebarCollapsed && (
             <Tooltip
               disabled={!!currentConversationId}
               popupContent={t('share.chat.newChatTip')}
@@ -122,7 +130,7 @@ const Header = () => {
                 </ActionButton>
               </div>
             </Tooltip>
-          )}
+          )} */}
         </div>
         <div className='flex items-center gap-1'>
           {currentConversationId && (

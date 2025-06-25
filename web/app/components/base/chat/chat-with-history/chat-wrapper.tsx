@@ -173,12 +173,14 @@ const ChatWrapper = () => {
       return null
     }
     else {
-      return <InputsForm collapsed={collapsed} setCollapsed={setCollapsed} />
+      return null
+      // return <InputsForm collapsed={collapsed} setCollapsed={setCollapsed} />
     }
   }, [inputsForms.length, isMobile, currentConversationId, collapsed, allInputsHidden])
 
   const welcome = useMemo(() => {
     const welcomeMessage = chatList.find(item => item.isOpeningStatement)
+    // console.log(welcomeMessage)
     if (respondingState)
       return null
     if (currentConversationId)

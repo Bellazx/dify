@@ -4,7 +4,7 @@ export const UUID_NIL = '00000000-0000-0000-0000-000000000000'
 // 空闲检测配置
 export const IDLE_DETECTION_CONFIG = {
   // 总空闲超时时间（毫秒）
-  TOTAL_TIMEOUT: parseInt(process.env.NEXT_PUBLIC_IDLE_TIMEOUT || '45000', 10),
+  TOTAL_TIMEOUT: parseInt(process.env.NEXT_PUBLIC_IDLE_TIMEOUT || '60000', 10),
   // 警告倒计时时间（毫秒）
   WARNING_TIME: parseInt(process.env.NEXT_PUBLIC_IDLE_WARNING_TIME || '15000', 10),
   // 倒计时更新间隔（毫秒）

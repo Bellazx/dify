@@ -53,6 +53,7 @@ const InputsFormContent = ({ showTip }: Props) => {
               value={inputsFormValue?.[form.variable] || ''}
               onChange={e => handleFormChange(form.variable, e.target.value)}
               placeholder={form.label}
+              disabled={true}
             />
           )}
           {form.type === InputVarType.number && (

@@ -130,8 +130,10 @@ const ChatInputArea = ({
             headers: {}
           })
 
-          const responseText = await response.text()
-          console.error(responseText)
+          // 使用UTF-8编码解析响应文本
+          const responseBuffer = await response.arrayBuffer()
+          const responseText = new TextDecoder('utf-8').decode(responseBuffer)
+          console.log(responseText)
 
           // 获取登陆地址，并完成注入
           const responseData = JSON.parse(responseText)
