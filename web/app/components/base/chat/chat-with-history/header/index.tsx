@@ -31,7 +31,6 @@ const Header = () => {
     handleRenameConversation,
     handleDeleteConversation,
     handleNewConversation,
-    handleStartChat,
     sidebarCollapseState,
     handleSidebarCollapse,
     isResponding,
@@ -71,12 +70,6 @@ const Header = () => {
       handleRenameConversation(showRename.id, newName, { onSuccess: handleCancelRename })
   }, [showRename, handleRenameConversation, handleCancelRename])
 
-  // 页面初始化时自动开始对话
-  useEffect(() => {
-    if (!currentConversationId && !isResponding) {
-      handleStartChat()
-    }
-  }, [currentConversationId, isResponding, handleStartChat])
 
   return (
     <>
@@ -100,20 +93,20 @@ const Header = () => {
           {currentConversationId && currentConversationItem && isSidebarCollapsed && (
             <>
               <div className='p-1 text-divider-deep'>/</div>
-              {/* <Operation
+              {<Operation
                 title={appData?.site.title || ''}
-                isPinned={!!isPin}
-                togglePin={() => handleOperate(isPin ? 'unpin' : 'pin')}
+                // isPinned={!!isPin}
+                // togglePin={() => handleOperate(isPin ? 'unpin' : 'pin')}
                 isShowDelete
                 isShowRenameConversation
                 onRenameConversation={() => handleOperate('rename')}
                 onDelete={() => handleOperate('delete')}
-              /> */}
+              /> }
             </>
           )}
-          <div className='flex items-center px-1'>
+          {/* <div className='flex items-center px-1'>
             <div className='h-[14px] w-px bg-divider-regular'></div>
-          </div>
+          </div> */}
           {/* {isSidebarCollapsed && (
             <Tooltip
               disabled={!!currentConversationId}

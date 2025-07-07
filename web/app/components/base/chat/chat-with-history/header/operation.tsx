@@ -11,19 +11,19 @@ import cn from '@/utils/classnames'
 
 type Props = {
   title: string
-  isPinned: boolean
+  // isPinned: boolean
   isShowRenameConversation?: boolean
   onRenameConversation?: () => void
   isShowDelete: boolean
-  togglePin: () => void
+  // togglePin: () => void
   onDelete: () => void
   placement?: Placement
 }
 
 const Operation: FC<Props> = ({
   title,
-  isPinned,
-  togglePin,
+  // isPinned,
+  // togglePin,
   isShowRenameConversation,
   onRenameConversation,
   isShowDelete,
@@ -45,10 +45,10 @@ const Operation: FC<Props> = ({
       >
         <div className={cn('flex cursor-pointer items-center rounded-lg p-1.5 pl-2 text-text-secondary hover:bg-state-base-hover', open && 'bg-state-base-hover')}>
           <div className='system-md-semibold'>{title}</div>
-          <RiArrowDownSLine className='h-4 w-4 ' />
+          {/* <RiArrowDownSLine className='h-4 w-4 ' /> */}
         </div>
       </PortalToFollowElemTrigger>
-      <PortalToFollowElemContent className="z-50">
+      {/* <PortalToFollowElemContent className="z-50">
         <div
           className={'min-w-[120px] rounded-xl border-[0.5px] border-components-panel-border bg-components-panel-bg-blur p-1 shadow-lg backdrop-blur-sm'}
         >
@@ -66,7 +66,7 @@ const Operation: FC<Props> = ({
             </div>
           )}
         </div>
-      </PortalToFollowElemContent>
+      </PortalToFollowElemContent> */}
     </PortalToFollowElem>
   )
 }

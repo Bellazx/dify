@@ -48,6 +48,7 @@ const ChatWrapper = () => {
     setClearChatList,
     setIsResponding,
     allInputsHidden,
+    handleStartChat,
   } = useChatWithHistoryContext()
   const appConfig = useMemo(() => {
     const config = appParams || {}
@@ -173,6 +174,7 @@ const ChatWrapper = () => {
       return null
     }
     else {
+      handleStartChat(() => setCollapsed(true))
       return null
       // return <InputsForm collapsed={collapsed} setCollapsed={setCollapsed} />
     }

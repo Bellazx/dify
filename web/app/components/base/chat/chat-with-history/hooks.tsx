@@ -437,6 +437,133 @@ export const useChatWithHistory = (installedAppInfo?: InstalledApp) => {
     handleChangeConversation('')
     handleNewConversationInputsChange(await getRawInputsFromUrlParams())
     setClearChatList(true)
+
+    console.log('🔄 开始新对话，处理重置流程...')
+    
+    try {
+      // 停止当前聊天
+      currentChatInstanceRef.current.handleStop()
+      
+      // 显示提示信息（在重定向前）
+      notify({ 
+        type: 'info', 
+        message: '开始重置会话...' 
+      })
+      
+      console.log('当前URL:', window.location.href)
+      
+      // 构建新的URL，移除token参数
+      const currentUrl = new URL(window.location.href)
+      const cleanParams = new URLSearchParams()
+      
+      // 遍历现有参数，只保留非敏感参数
+      for (const [key, value] of currentUrl.searchParams.entries()) {
+        if (!['token', 'access_token', 'auth_token', 'user_id', 'sys.user_id'].includes(key)) {
+          cleanParams.set(key, value)
+        }
+      }
+      
+      // 添加重置标记，告诉新页面需要清空所有状态
+      cleanParams.set('reset', Date.now().toString())
+      
+      // 重新构建URL
+      const newUrl = cleanParams.toString() 
+        ? `${currentUrl.origin}${currentUrl.pathname}?${cleanParams.toString()}`
+        : `${currentUrl.origin}${currentUrl.pathname}?reset=${Date.now()}`
+      
+      console.log('🔧 构建重定向URL:')
+      console.log('  原始URL:', currentUrl.href)
+      console.log('  新URL:', newUrl)
+      console.log('  重置参数:', cleanParams.get('reset'))
+      
+      // 清除所有相关的本地存储数据
+      try {
+        console.log('🧹 清除本地存储数据...')
+        if (document.visibilityState === 'visible' && !document.hidden) {
+          console.log('页面显示无问题🧹 清除本地存储数据...')
+            // 清除token相关
+          localStorage.removeItem('token')
+          localStorage.removeItem('user_token')
+          sessionStorage.removeItem('token')
+          sessionStorage.removeItem('user_token')
+          
+          // 清除对话历史相关
+          localStorage.removeItem('conversationIdInfo')
+          localStorage.removeItem('webappSidebarCollapse')
+          
+          // 清除SWR缓存（对话列表、聊天记录等）
+          const keysToRemove = []
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i)
+            if (key) {
+              // 清除SWR缓存的key（通常以 'swr-' 开头或包含特定模式）
+              if (key.includes('appConversationData') || 
+                  key.includes('appChatList') || 
+                  key.includes('appParams') ||
+                  key.includes('appMeta') ||
+                  key.startsWith('swr-')) {
+                keysToRemove.push(key)
+              }
+            }
+          }
+              
+          // 批量删除
+          keysToRemove.forEach(key => {
+            localStorage.removeItem(key)
+          })
+          
+          // 清除sessionStorage中的对话相关数据
+          const sessionKeysToRemove = []
+          for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i)
+            if (key) {
+              if (key.includes('conversation') || 
+                  key.includes('chat') || 
+                  key.includes('input') ||
+                  key.startsWith('swr-')) {
+                sessionKeysToRemove.push(key)
+              }
+            }
+          }
+          
+          sessionKeysToRemove.forEach(key => {
+            sessionStorage.removeItem(key)
+          })
+          
+          console.log('✅ 本地存储数据清除完成')
+        }
+        
+      } catch (e) {
+        console.error('❌ 清除缓存时出错:', e)
+      }
+      
+      // 延迟一点时间让用户看到提示信息，然后重定向
+      console.log('🚀 开始重定向到:', newUrl)
+      
+      // 先强制清除当前URL的token参数，然后重定向
+      try {
+        // 方法1: 先用history API清理当前URL
+        window.history.replaceState({}, '', newUrl)
+        console.log('✅ URL已通过history API更新')
+        
+        // 方法2: 然后强制刷新页面确保生效
+        setTimeout(() => {
+          console.log('🔄 强制刷新页面以确保token完全移除')
+          window.location.reload()
+        }, 100)
+        
+      } catch (e) {
+        console.error('❌ History API失败，使用直接重定向:', e)
+        // 如果history API失败，直接重定向
+        window.location.replace(newUrl)
+      }
+      
+    } catch (error) {
+      console.error('❌ 处理空闲超时时出错:', error)
+      // 如果URL处理失败，则直接刷新页面
+      console.log('🔄 回退方案：直接刷新页面')
+      window.location.reload()
+    }
   }, [handleChangeConversation, setShowNewConversationItemInList, handleNewConversationInputsChange, setClearChatList])
   const handleUpdateConversationList = useCallback(() => {
     mutateAppConversationData()
