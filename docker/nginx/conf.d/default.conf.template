@@ -35,6 +35,11 @@ server {
       include proxy.conf;
     }
 
+    location /library/backend/ {
+      proxy_pass http://172.21.0.1:8889/;
+      include proxy.conf;
+    }
+
     location / {
       proxy_pass http://web:3000;
       include proxy.conf;

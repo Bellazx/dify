@@ -1,8 +1,8 @@
 {
   "api": {
     "encrypt": {
-      "baseUrl": "http://111.186.61.148:8888",
-      "endpoint": "/lib/auth/encrypt",
+      "baseUrl": "http://10.119.4.75",
+      "endpoint": "/library/backend/lib/auth/encrypt",  
       "params": {
         "qryType": "1"
       }
@@ -18,10 +18,10 @@
       "encryptBaseUrl": "http://127.0.0.1:8888"
     },
     "docker": {
-      "encryptBaseUrl": "http://111.186.61.148:8888"
+      "encryptBaseUrl": "http://10.119.4.75/library/backend"
     },
     "production": {
-      "encryptBaseUrl": "http://111.186.61.148:8888"
+      "encryptBaseUrl": "http://10.119.4.75/library/backend"
     }
   },
   "currentEnvironment": "docker"
