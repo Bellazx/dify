@@ -144,7 +144,7 @@
 }
 
 .markdown-body hr {
-  margin: 24px 0;
+  margin: 22px 0;
 }
 
 .markdown-body hr::before {
@@ -285,7 +285,7 @@
 .markdown-body h6 {
   padding-top: 12px;
   margin-bottom: 12px;
-  font-weight: var(--base-text-weight-semibold, 600);
+  font-weight: var(--base-text-weight-semibold, 500);
   line-height: 1.25;
 }
 
@@ -1041,4 +1041,40 @@
 }
 .markdown-body .abcjs-inline-audio .abcjs-btn {
   display: flex !important;
+}
+
+/* 欢迎消息大字体样式强制覆盖 */
+.text-xl .markdown-body,
+.text-xl .markdown-body p,
+.text-xl .markdown-body h1,
+.text-xl .markdown-body h2,
+.text-xl .markdown-body h3,
+.text-xl .markdown-body h4,
+.text-xl .markdown-body h5,
+.text-xl .markdown-body h6 {
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+
+.text-2xl .markdown-body,
+.text-2xl .markdown-body p,
+.text-2xl .markdown-body h1,
+.text-2xl .markdown-body h2,
+.text-2xl .markdown-body h3,
+.text-2xl .markdown-body h4,
+.text-2xl .markdown-body h5,
+.text-2xl .markdown-body h6 {
+  font-size: 22px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+}
+
+/* 强制覆盖所有可能的markdown元素字体大小 */
+.font-medium .markdown-body > *,
+.text-xl .markdown-body > *,
+.text-2xl .markdown-body > * {
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
 }

@@ -117,8 +117,13 @@ const Question: FC<QuestionProps> = ({
         </div>
         <div
           ref={contentRef}
-          className='w-full rounded-2xl bg-background-gradient-bg-fill-chat-bubble-bg-3 px-4 py-3 text-sm text-text-primary'
-          style={theme?.chatBubbleColorStyle ? CssTransform(theme.chatBubbleColorStyle) : {}}
+          className='w-full rounded-2xl px-4 py-3 text-sm text-text-primary'
+          style={{
+            backgroundColor: 'rgba(255, 248, 240, 0.8)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(255, 165, 0, 0.3)',
+            ...theme?.chatBubbleColorStyle ? CssTransform(theme.chatBubbleColorStyle) : {}
+          }}
         >
           {
             !!message_files?.length && (
@@ -136,7 +141,7 @@ const Question: FC<QuestionProps> = ({
                 flex flex-col gap-2 rounded-xl
                 border border-components-chat-input-border bg-components-panel-bg-blur p-[9px] shadow-md
               ">
-              <div className="max-h-[158px] overflow-y-auto overflow-x-hidden">
+              <div className="max-h-[250px] overflow-y-auto overflow-x-hidden">
                 <Textarea
                   className={cn(
                     'body-lg-regular w-full p-1 leading-6 text-text-tertiary outline-none',

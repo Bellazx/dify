@@ -12,14 +12,14 @@ const Link = ({ node, children, ...props }: any) => {
   if (node.properties?.href && node.properties.href?.toString().startsWith('abbr')) {
     const hidden_text = decodeURIComponent(node.properties.href.toString().split('abbr:')[1])
 
-    return <abbr className="cursor-pointer underline !decoration-primary-700 decoration-dashed" onClick={() => onSend?.(hidden_text)} title={node.children[0]?.value || ''}>{node.children[0]?.value || ''}</abbr>
+    return <abbr className="cursor-pointer underline !decoration-blue-800 decoration-dashed text-blue-800 font-medium" onClick={() => onSend?.(hidden_text)} title={node.children[0]?.value || ''}>{node.children[0]?.value || ''}</abbr>
   }
   else {
     const href = props.href || node.properties?.href
     if(!isValidUrl(href))
       return <span>{children}</span>
 
-    return <a href={href} className="cursor-pointer underline !decoration-primary-700 decoration-dashed">{children || 'Download'}</a>
+    return <a href={href} className="cursor-pointer underline !decoration-blue-800 decoration-dashed text-blue-800 font-medium">{children || 'Download'}</a>
   }
 }
 

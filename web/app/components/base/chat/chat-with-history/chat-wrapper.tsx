@@ -194,17 +194,34 @@ const ChatWrapper = () => {
     if (welcomeMessage.suggestedQuestions && welcomeMessage.suggestedQuestions?.length > 0) {
       return (
         <div className='flex min-h-[50vh] items-center justify-center px-4 py-12'>
-          <div className='flex max-w-[720px] grow gap-4'>
+          <div className='flex max-w-[1000px] grow gap-8'>
             <AppIcon
-              size='xl'
+              size='xxl'
               iconType='image'
               icon={appData?.site.icon}
               background={appData?.site.icon_background}
               imageUrl='/logo/sjtu-site.png'
+              className="!w-20 !h-20"
             />
             <div className='w-0 grow'>
-              <div className='body-lg-regular grow rounded-2xl bg-chat-bubble-bg px-4 py-3 text-text-primary'>
-                <Markdown content={welcomeMessage.content} />
+              <div 
+                className='body-xl-regular grow rounded-2xl px-6 py-4 text-text-primary'
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 165, 0, 0.2)',
+                }}
+              >
+                <div 
+                  style={{ 
+                    fontSize: '20px !important', 
+                    fontWeight: '500 !important', 
+                    lineHeight: '1.5 !important' 
+                  }} 
+                  className="text-xl font-medium"
+                >
+                  <Markdown content={welcomeMessage.content} />
+                </div>
                 <SuggestedQuestions item={welcomeMessage} />
               </div>
             </div>
@@ -213,16 +230,26 @@ const ChatWrapper = () => {
       )
     }
     return (
-      <div className={cn('flex h-[50vh] flex-col items-center justify-center gap-3 py-12')}>
+      <div className={cn('flex h-[50vh] flex-col items-center justify-center gap-6 py-12')}>
         <AppIcon
-          size='xl'
+          size='xxl'
           iconType='image'
           icon={appData?.site.icon}
           background={appData?.site.icon_background}
           imageUrl='/logo/sjtu-site.png'
+          className="!w-20 !h-20"
         />
-        <div className='max-w-[768px] px-4'>
-          <Markdown className='!body-2xl-regular !text-text-tertiary' content={welcomeMessage.content} />
+        <div className='max-w-[1000px] px-16'>
+          <div 
+            style={{ 
+              fontSize: '22px !important', 
+              fontWeight: '500 !important', 
+              lineHeight: '1.4 !important' 
+            }} 
+            className="text-2xl font-medium"
+          >
+            <Markdown className='!text-text-tertiary' content={welcomeMessage.content} />
+          </div>
         </div>
       </div>
     )
@@ -239,38 +266,59 @@ const ChatWrapper = () => {
 
   return (
     <div
-      className='h-full overflow-hidden bg-chatbot-bg'
+      className='relative h-full overflow-hidden'
+      style={{
+        backgroundImage: 'url(/bg1.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
     >
-      <Chat
-        appData={appData}
-        config={appConfig}
-        chatList={messageList}
-        isResponding={respondingState}
-        chatContainerInnerClassName={`mx-auto pt-6 w-full max-w-[768px] ${isMobile && 'px-4'}`}
-        chatFooterClassName='pb-4'
-        chatFooterInnerClassName={`mx-auto w-full max-w-[768px] ${isMobile ? 'px-2' : 'px-4'}`}
-        onSend={doSend}
-        inputs={currentConversationId ? currentConversationInputs as any : newConversationInputs}
-        inputsForm={inputsForms}
-        onRegenerate={doRegenerate}
-        onStopResponding={handleStop}
-        chatNode={
-          <>
-            {chatNode}
-            {welcome}
-          </>
-        }
-        allToolIcons={appMeta?.tool_icons || {}}
-        onFeedback={handleFeedback}
-        suggestedQuestions={suggestedQuestions}
-        answerIcon={answerIcon}
-        hideProcessDetail
-        themeBuilder={themeBuilder}
-        switchSibling={siblingMessageId => setTargetMessageId(siblingMessageId)}
-        inputDisabled={inputDisabled}
-        isMobile={isMobile}
-        sidebarCollapseState={sidebarCollapseState}
-      />
+      {/* 背景遮罩层 */}
+      <div className='absolute inset-0 bg-white/40'></div>
+      
+      {/* 右侧中间的jiaoxiaotuan.png图片 */}
+      <div className='absolute right-8 top-[40%] transform -translate-y-1/2 z-10 opacity-90'>
+        <img 
+          src='/jiaoxiaotuan.png' 
+          alt='交小團' 
+          className='w-96 h-512 object-contain'
+        />
+      </div>
+      
+      {/* 主要聊天内容 */}
+      <div className='relative z-20 h-full'>
+        <Chat
+          appData={appData}
+          config={appConfig}
+          chatList={messageList}
+          isResponding={respondingState}
+          chatContainerInnerClassName={`mx-auto pt-6 w-full max-w-[1000px] ${isMobile && 'px-4'}`}
+          chatFooterClassName='pb-4'
+          chatFooterInnerClassName={`mx-auto w-full max-w-[1000px] ${isMobile ? 'px-2' : 'px-4'}`}
+          onSend={doSend}
+          inputs={currentConversationId ? currentConversationInputs as any : newConversationInputs}
+          inputsForm={inputsForms}
+          onRegenerate={doRegenerate}
+          onStopResponding={handleStop}
+          chatNode={
+            <>
+              {chatNode}
+              {welcome}
+            </>
+          }
+          allToolIcons={appMeta?.tool_icons || {}}
+          onFeedback={handleFeedback}
+          suggestedQuestions={suggestedQuestions}
+          answerIcon={answerIcon}
+          hideProcessDetail
+          themeBuilder={themeBuilder}
+          switchSibling={siblingMessageId => setTargetMessageId(siblingMessageId)}
+          inputDisabled={inputDisabled}
+          isMobile={isMobile}
+          sidebarCollapseState={sidebarCollapseState}
+        />
+      </div>
     </div>
   )
 }

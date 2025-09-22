@@ -220,12 +220,16 @@ const ChatInputArea = ({
     <>
       <div
         className={cn(
-          'relative z-10 rounded-xl border border-components-chat-input-border bg-components-panel-bg-blur pb-[9px] shadow-md',
-          isDragActive && 'border border-dashed border-components-option-card-option-selected-border',
+          'relative z-10 rounded-xl border border-orange-200/50 bg-white/90 backdrop-blur-sm pb-[9px] shadow-lg',
+          isDragActive && 'border border-dashed border-orange-400/70',
           disabled && 'pointer-events-none border-components-panel-border opacity-50 shadow-none',
         )}
+        style={{
+          backgroundColor: 'rgba(255, 248, 240, 0.85)',
+          borderColor: 'rgba(255, 165, 0, 0.3)',
+        }}
       >
-        <div className='relative max-h-[158px] overflow-y-auto overflow-x-hidden px-[9px] pt-[9px]'>
+        <div className='relative max-h-[250px] overflow-y-auto overflow-x-hidden px-[9px] pt-[9px]'>
           <FileListInChatInput fileConfig={visionConfig!} />
           <div
             ref={wrapperRef}
@@ -245,7 +249,7 @@ const ChatInputArea = ({
                 )}
                 placeholder={t('common.chat.inputPlaceholder', { botName }) || ''}
                 autoFocus
-                minRows={1}
+                minRows={2}
                 onResize={handleTextareaResize}
                 value={query}
                 onChange={(e) => {

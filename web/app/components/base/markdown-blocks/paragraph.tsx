@@ -21,7 +21,7 @@ const Paragraph = (paragraph: any) => {
       </div>
     )
   }
-  return <p>{paragraph.children}</p>
+  return <p className="text-gray-800 font-normal" style={{ fontSize: 'inherit !important', lineHeight: 'inherit !important', fontWeight: 'inherit !important' }}>{paragraph.children}</p>
 }
 
 export default Paragraph
