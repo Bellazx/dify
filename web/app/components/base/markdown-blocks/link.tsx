@@ -19,7 +19,19 @@ const Link = ({ node, children, ...props }: any) => {
     if(!isValidUrl(href))
       return <span>{children}</span>
 
-    return <a href={href} className="cursor-pointer underline !decoration-blue-800 decoration-dashed text-blue-800 font-medium">{children || 'Download'}</a>
+    // 检查链接是否包含10.119.4.239，如果是则在当前窗口打开，否则在新窗口打开
+    const shouldOpenInNewWindow = !href.includes('10.119.4.239')
+    
+    return (
+      <a 
+        href={href} 
+        target={shouldOpenInNewWindow ? "_blank" : undefined}
+        rel={shouldOpenInNewWindow ? "noopener noreferrer" : undefined}
+        className="cursor-pointer underline !decoration-blue-800 decoration-dashed text-blue-800 font-medium"
+      >
+        {children || 'Download'}
+      </a>
+    )
   }
 }
 
