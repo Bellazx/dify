@@ -18,10 +18,10 @@
       "encryptBaseUrl": "http://127.0.0.1:8888"
     },
     "docker": {
-      "encryptBaseUrl": "http://10.119.4.75/library/backend"
+      "encryptBaseUrl": "http://10.119.4.75"
     },
     "production": {
-      "encryptBaseUrl": "http://10.119.4.75/library/backend"
+      "encryptBaseUrl": "http://10.119.4.75"
     }
   },
   "currentEnvironment": "docker"
