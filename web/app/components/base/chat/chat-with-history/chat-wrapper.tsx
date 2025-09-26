@@ -270,7 +270,7 @@ const ChatWrapper = () => {
       className='relative h-full overflow-hidden'
       style={{
         backgroundImage: 'url(/bg1.jpg)',
-        backgroundSize: '120%',
+        backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
       }}
