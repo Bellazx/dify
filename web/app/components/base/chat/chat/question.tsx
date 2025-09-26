@@ -64,8 +64,8 @@ const Question: FC<QuestionProps> = ({
 
   const handleResend = useCallback(() => {
     setIsEditing(false)
-    onRegenerate?.(item, { message: editedContent, files: message_files })
-  }, [editedContent, message_files, item, onRegenerate])
+    onRegenerate?.(item)
+  }, [item, onRegenerate])
 
   const handleCancelEditing = useCallback(() => {
     setIsEditing(false)
@@ -117,11 +117,12 @@ const Question: FC<QuestionProps> = ({
         </div>
         <div
           ref={contentRef}
-          className='w-full rounded-2xl px-4 py-3 text-sm text-text-primary'
+          className='w-full rounded-2xl px-4 py-3 text-base text-text-primary'
           style={{
-            backgroundColor: 'rgba(255, 248, 240, 0.8)',
-            backdropFilter: 'blur(8px)',
+            backgroundColor: 'rgba(255, 248, 240, 0.6)',
+            backdropFilter: 'blur(16px)',
             border: '1px solid rgba(255, 165, 0, 0.3)',
+            fontSize: '16px !important',
             ...theme?.chatBubbleColorStyle ? CssTransform(theme.chatBubbleColorStyle) : {}
           }}
         >

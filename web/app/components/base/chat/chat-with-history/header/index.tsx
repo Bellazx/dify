@@ -73,14 +73,14 @@ const Header = () => {
 
   return (
     <>
-      <div className='flex h-14 shrink-0 items-center justify-between p-3'>
-        <div className={cn('flex items-center gap-1 transition-all duration-200 ease-in-out', !isSidebarCollapsed && 'user-select-none opacity-0')}>
-          <ActionButton className={cn(!isSidebarCollapsed && 'cursor-default')} size='l' onClick={() => handleSidebarCollapse(false)}>
+      <div className='flex h-14 shrink-0 items-center p-3 w-full overflow-hidden'>
+        <div className={cn('flex items-center gap-0.5 transition-all duration-200 ease-in-out flex-1 min-w-0 max-w-[calc(100%-100px)] overflow-hidden whitespace-nowrap', !isSidebarCollapsed && 'user-select-none opacity-0')}>
+          <ActionButton className={cn(!isSidebarCollapsed && 'cursor-default', 'flex-shrink-0')} size='m' onClick={() => handleSidebarCollapse(false)}>
             <RiLayoutRight2Line className='h-[18px] w-[18px]' />
           </ActionButton>
-          <div className='mr-1 shrink-0'>
+          <div className='mr-0.5 shrink-0'>
             <AppIcon
-              size='large'
+              size='medium'
               iconType='image'
               icon={appData?.site.icon}
               background={appData?.site.icon_background}
@@ -88,20 +88,22 @@ const Header = () => {
             />
           </div>
           {!currentConversationId && (
-            <div className={cn('system-md-semibold grow truncate text-text-secondary')}>{appData?.site.title}</div>
+            <div className={cn('system-md-semibold flex-1 truncate text-text-secondary min-w-0')}>{appData?.site.title}</div>
           )}
           {currentConversationId && currentConversationItem && isSidebarCollapsed && (
             <>
-              <div className='p-1 text-divider-deep'>/</div>
-              {<Operation
-                title={appData?.site.title || ''}
-                // isPinned={!!isPin}
-                // togglePin={() => handleOperate(isPin ? 'unpin' : 'pin')}
-                isShowDelete
-                isShowRenameConversation
-                onRenameConversation={() => handleOperate('rename')}
-                onDelete={() => handleOperate('delete')}
-              /> }
+              <div className='p-1 text-divider-deep flex-shrink-0'>/</div>
+              <div className="flex-shrink-0 overflow-hidden">
+                <Operation
+                  title={appData?.site.title || ''}
+                  // isPinned={!!isPin}
+                  // togglePin={() => handleOperate(isPin ? 'unpin' : 'pin')}
+                  isShowDelete
+                  isShowRenameConversation
+                  onRenameConversation={() => handleOperate('rename')}
+                  onDelete={() => handleOperate('delete')}
+                />
+              </div>
             </>
           )}
           {/* <div className='flex items-center px-1'>
@@ -125,18 +127,25 @@ const Header = () => {
             </Tooltip>
           )} */}
         </div>
-        <div className='flex items-center gap-1'>
-          {currentConversationId && (
-            <Tooltip
-              popupContent={t('share.chat.resetChat')}
+        <div className='flex items-center gap-0.5 flex-shrink-0 overflow-hidden w-[100px] justify-end min-w-[100px]'>
+          {/* 重置聊天按钮 - 始终显示 */}
+          <Tooltip
+            popupContent={t('share.chat.resetChat')}
+          >
+            <ActionButton 
+              size='m' 
+              onClick={handleNewConversation}
+              className='flex-shrink-0'
             >
-              <ActionButton size='l' onClick={handleNewConversation}>
-                <RiResetLeftLine className='h-[18px] w-[18px]' />
-              </ActionButton>
-            </Tooltip>
-          )}
-          {currentConversationId && inputsForms.length > 0 && (
-            <ViewFormDropdown />
+              <RiResetLeftLine className='h-[18px] w-[18px]' />
+            </ActionButton>
+          </Tooltip>
+          
+          {/* 表单下拉菜单 - 当有表单时显示 */}
+          {inputsForms.length > 0 && (
+            <div className='flex-shrink-0 overflow-hidden'>
+              <ViewFormDropdown />
+            </div>
           )}
         </div>
       </div>

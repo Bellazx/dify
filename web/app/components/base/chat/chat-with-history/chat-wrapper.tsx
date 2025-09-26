@@ -205,11 +205,12 @@ const ChatWrapper = () => {
             />
             <div className='w-0 grow'>
               <div 
-                className='body-xl-regular grow rounded-2xl px-6 py-4 text-text-primary'
+                className='body-xl-regular grow rounded-2xl px-6 py-4 text-text-primary text-lg'
                 style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                  backdropFilter: 'blur(10px)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                  backdropFilter: 'blur(16px)',
                   border: '1px solid rgba(255, 165, 0, 0.2)',
+                  fontSize: '18px !important',
                 }}
               >
                 <div 
@@ -269,7 +270,7 @@ const ChatWrapper = () => {
       className='relative h-full overflow-hidden'
       style={{
         backgroundImage: 'url(/bg1.jpg)',
-        backgroundSize: 'cover',
+        backgroundSize: '120%',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
       }}
@@ -293,9 +294,9 @@ const ChatWrapper = () => {
           config={appConfig}
           chatList={messageList}
           isResponding={respondingState}
-          chatContainerInnerClassName={`mx-auto pt-6 w-full max-w-[1000px] ${isMobile && 'px-4'}`}
+          chatContainerInnerClassName={`mx-auto pt-6 w-full max-w-[1400px] ${isMobile && 'px-4'}`}
           chatFooterClassName='pb-4'
-          chatFooterInnerClassName={`mx-auto w-full max-w-[1000px] ${isMobile ? 'px-2' : 'px-4'}`}
+          chatFooterInnerClassName={`mx-auto w-full max-w-[1400px] ${isMobile ? 'px-2' : 'px-4'}`}
           onSend={doSend}
           inputs={currentConversationId ? currentConversationInputs as any : newConversationInputs}
           inputsForm={inputsForms}

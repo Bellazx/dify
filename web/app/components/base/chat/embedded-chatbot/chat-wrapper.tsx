@@ -199,11 +199,12 @@ const ChatWrapper = () => {
               className="!w-20 !h-20"
             />
             <div 
-              className='body-xl-regular grow rounded-2xl px-6 py-4 text-text-primary'
+              className='body-xl-regular grow rounded-2xl px-6 py-4 text-text-primary text-lg'
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                backdropFilter: 'blur(10px)',
+                backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                backdropFilter: 'blur(16px)',
                 border: '1px solid rgba(255, 165, 0, 0.2)',
+                fontSize: '18px !important',
               }}
             >
               <div 
@@ -264,7 +265,7 @@ const ChatWrapper = () => {
       className='relative h-full'
       style={{
         backgroundImage: 'url(/bg1.jpg)',
-        backgroundSize: 'cover',
+        backgroundSize: '120%',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
       }}
@@ -288,9 +289,9 @@ const ChatWrapper = () => {
           config={appConfig}
           chatList={messageList}
           isResponding={respondingState}
-          chatContainerInnerClassName={cn('mx-auto w-full max-w-[1000px] pt-4 tablet:px-4', isMobile && 'px-4')}
+          chatContainerInnerClassName={cn('mx-auto w-full max-w-[1400px] pt-4 tablet:px-4', isMobile && 'px-4')}
           chatFooterClassName={cn('pb-4', !isMobile && 'rounded-b-2xl')}
-          chatFooterInnerClassName={cn('mx-auto w-full max-w-[1000px] px-4', isMobile && 'px-2')}
+          chatFooterInnerClassName={cn('mx-auto w-full max-w-[1400px] px-4', isMobile && 'px-2')}
           onSend={doSend}
           inputs={currentConversationId ? currentConversationInputs as any : newConversationInputs}
           inputsForm={inputsForms}

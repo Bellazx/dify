@@ -216,11 +216,12 @@ const Answer: FC<AnswerProps> = ({
           <div className={cn('group relative pr-10', chatAnswerContainerInner)}>
             <div
               ref={contentRef}
-              className={cn('body-lg-regular relative inline-block max-w-full rounded-2xl px-4 py-3 text-text-primary', workflowProcess && 'w-full')}
+              className={cn('body-lg-regular relative inline-block max-w-full rounded-2xl px-4 py-3 text-text-primary text-base', workflowProcess && 'w-full')}
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                backdropFilter: 'blur(10px)',
+                backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                backdropFilter: 'blur(16px)',
                 border: '1px solid rgba(255, 165, 0, 0.2)',
+                fontSize: '16px !important',
               }}
             >
               {

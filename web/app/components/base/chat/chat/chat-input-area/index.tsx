@@ -220,16 +220,17 @@ const ChatInputArea = ({
     <>
       <div
         className={cn(
-          'relative z-10 rounded-xl border border-orange-200/50 bg-white/90 backdrop-blur-sm pb-[9px] shadow-lg',
-          isDragActive && 'border border-dashed border-orange-400/70',
+          'relative z-10 rounded-xl border border-orange-200/30 bg-white/60 backdrop-blur-lg pb-[12px] shadow-xl',
+          isDragActive && 'border border-dashed border-orange-400/50',
           disabled && 'pointer-events-none border-components-panel-border opacity-50 shadow-none',
         )}
         style={{
-          backgroundColor: 'rgba(255, 248, 240, 0.85)',
+          backgroundColor: 'rgba(255, 248, 240, 0.6)',
           borderColor: 'rgba(255, 165, 0, 0.3)',
+          borderWidth: '1px',
         }}
       >
-        <div className='relative max-h-[250px] overflow-y-auto overflow-x-hidden px-[9px] pt-[9px]'>
+        <div className='relative max-h-[300px] overflow-y-auto overflow-x-hidden px-[12px] pt-[12px]'>
           <FileListInChatInput fileConfig={visionConfig!} />
           <div
             ref={wrapperRef}
@@ -245,11 +246,11 @@ const ChatInputArea = ({
               <Textarea
                 ref={ref => textareaRef.current = ref as any}
                 className={cn(
-                  'body-lg-regular w-full resize-none bg-transparent p-1 leading-6 text-text-primary outline-none',
+                  'body-lg-regular w-full resize-none bg-transparent p-3 leading-7 text-text-primary outline-none',
                 )}
                 placeholder={t('common.chat.inputPlaceholder', { botName }) || ''}
                 autoFocus
-                minRows={2}
+                minRows={3}
                 onResize={handleTextareaResize}
                 value={query}
                 onChange={(e) => {
@@ -281,7 +282,7 @@ const ChatInputArea = ({
         </div>
         {
           isMultipleLine && (
-            <div className='px-[9px]'>{operation}</div>
+            <div className='px-[12px]'>{operation}</div>
           )
         }
       </div>
