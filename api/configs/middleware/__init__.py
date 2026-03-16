@@ -183,7 +183,7 @@ class DatabaseConfig(BaseSettings):
         db_extras_dict = dict(parse_qsl(self.DB_EXTRAS))
         options = db_extras_dict.get("options", "")
         # Always include timezone
-        timezone_opt = "-c timezone=UTC"
+        timezone_opt = "-c timezone=Asia/Shanghai"
         if options:
             # Merge user options and timezone
             merged_options = f"{options} {timezone_opt}"
